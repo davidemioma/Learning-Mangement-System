@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+//npm i -D prisma
+//npx prisma init
+//npx prisma generate - Do this after creating a new model
+//npx prisma db push - to push to your database.
+//npx prisma migrate reset - to reset your databse.
+//npx prisma studio - to view your data
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Category{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  courses Course[]
+}
+
+model Course{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId String @db.ObjectId
+  userId String
+  title String 
+  description String?
+  imageUrl String?
+  price Float?
+  isPublished Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  attachments Attachment[]
+
+  @@index([categoryId])
+}
+
+model Attachment{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  courseId String @db.ObjectId
+  name String
+  url String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+}
