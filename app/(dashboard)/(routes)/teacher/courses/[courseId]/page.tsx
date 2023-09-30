@@ -3,7 +3,10 @@ import prismadb from "@/lib/prismadb";
 import { redirect } from "next/navigation";
 import { LayoutDashboard } from "lucide-react";
 import TitleForm from "./_components/TitleForm";
-import IconBadge from "@/components/ui/icon-badge";
+import IconBadge from "@/components/icon-badge";
+import DescriptionForm from "./_components/DescriptionForm";
+import ImageForm from "./_components/ImageForm";
+import CategoryForm from "./_components/CategoryForm";
 
 export default async function CoursePage({
   params,
@@ -24,6 +27,12 @@ export default async function CoursePage({
     where: {
       id: courseId,
       userId,
+    },
+  });
+
+  const categories = await prismadb.category.findMany({
+    orderBy: {
+      name: "asc",
     },
   });
 
@@ -64,9 +73,19 @@ export default async function CoursePage({
           </div>
 
           <TitleForm course={course} />
-        </div>
 
-        <div></div>
+          <DescriptionForm course={course} />
+
+          <ImageForm course={course} />
+
+          <CategoryForm
+            course={course}
+            options={categories.map((category) => ({
+              value: category.id,
+              label: category.name,
+            }))}
+          />
+        </div>
       </div>
     </div>
   );
