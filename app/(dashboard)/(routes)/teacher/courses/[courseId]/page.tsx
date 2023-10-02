@@ -5,6 +5,7 @@ import TitleForm from "./_components/TitleForm";
 import IconBadge from "@/components/icon-badge";
 import ImageForm from "./_components/ImageForm";
 import PriceForm from "./_components/PriceForm";
+import ChapterForm from "./_components/ChapterForm";
 import CategoryForm from "./_components/CategoryForm";
 import AttachmentsForm from "./_components/AttachmentsForm";
 import DescriptionForm from "./_components/DescriptionForm";
@@ -36,6 +37,11 @@ export default async function CoursePage({
       userId,
     },
     include: {
+      chapters: {
+        orderBy: {
+          position: "asc",
+        },
+      },
       attachments: {
         orderBy: {
           createdAt: "desc",
@@ -60,6 +66,7 @@ export default async function CoursePage({
     course.imageUrl,
     course.categoryId,
     course.description,
+    course.chapters.some((chapter) => chapter.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -109,7 +116,7 @@ export default async function CoursePage({
               <h2 className="text-xl">Course Chapters</h2>
             </div>
 
-            <div>Chapters</div>
+            <ChapterForm course={course} />
           </div>
 
           <div className="space-y-6">
