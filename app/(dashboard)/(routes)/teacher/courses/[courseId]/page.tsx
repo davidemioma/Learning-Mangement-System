@@ -1,12 +1,19 @@
 import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 import { redirect } from "next/navigation";
-import { LayoutDashboard } from "lucide-react";
 import TitleForm from "./_components/TitleForm";
 import IconBadge from "@/components/icon-badge";
-import DescriptionForm from "./_components/DescriptionForm";
 import ImageForm from "./_components/ImageForm";
+import PriceForm from "./_components/PriceForm";
 import CategoryForm from "./_components/CategoryForm";
+import AttachmentsForm from "./_components/AttachmentsForm";
+import DescriptionForm from "./_components/DescriptionForm";
+import {
+  CircleDollarSign,
+  File,
+  LayoutDashboard,
+  ListChecks,
+} from "lucide-react";
 
 export default async function CoursePage({
   params,
@@ -27,6 +34,13 @@ export default async function CoursePage({
     where: {
       id: courseId,
       userId,
+    },
+    include: {
+      attachments: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
     },
   });
 
@@ -85,6 +99,38 @@ export default async function CoursePage({
               label: category.name,
             }))}
           />
+        </div>
+
+        <div className="space-y-6">
+          <div className="space-y-6">
+            <div className="flex items-center gap-2">
+              <IconBadge Icon={ListChecks} />
+
+              <h2 className="text-xl">Course Chapters</h2>
+            </div>
+
+            <div>Chapters</div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="flex items-center gap-2">
+              <IconBadge Icon={CircleDollarSign} />
+
+              <h2 className="text-xl">Sell Your Course</h2>
+            </div>
+
+            <PriceForm course={course} />
+          </div>
+
+          <div className="space-y-6">
+            <div className="flex items-center gap-2">
+              <IconBadge Icon={File} />
+
+              <h2 className="text-xl">Resources & Attachments</h2>
+            </div>
+
+            <AttachmentsForm course={course} />
+          </div>
         </div>
       </div>
     </div>

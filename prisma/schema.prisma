@@ -38,6 +38,8 @@ model Course{
   category Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   attachments Attachment[]
+  chapters Chapter[]
+  purchases Purchase[]
 }
 
 model Attachment{
@@ -49,4 +51,65 @@ model Attachment{
   updatedAt DateTime @updatedAt
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Chapter{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  courseId String @db.ObjectId
+  title String
+  description String?
+  videoUrl String?
+  position Int
+  isPublished Boolean @default(false)
+  isFree Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  muxData MuxData?
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  usersProgress UserProgress[]
+}
+
+model MuxData{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  chapterId String @unique @db.ObjectId
+  assetId String
+  playbackId String?
+
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model UserProgress{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  chapterId String @db.ObjectId
+  isCompleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+}
+
+model Purchase {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  courseId String @db.ObjectId
+  userId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model StripeCustomer {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique
+  stripeCustomerId String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
