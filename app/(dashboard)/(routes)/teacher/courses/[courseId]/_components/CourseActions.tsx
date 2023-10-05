@@ -4,19 +4,21 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Trash } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { Chapter } from "@prisma/client";
+import { Course } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import useConfettiStore from "@/hooks/use-confetti-store";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 
 interface Props {
   disabled: boolean;
-  courseId: string;
-  chapter: Chapter;
+  course: Course;
 }
 
-const ChapterActions = ({ disabled, courseId, chapter }: Props) => {
+const CourseActions = ({ disabled, course }: Props) => {
   const router = useRouter();
+
+  const confettiStore = useConfettiStore();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,18 +26,16 @@ const ChapterActions = ({ disabled, courseId, chapter }: Props) => {
     try {
       setIsLoading(true);
 
-      if (chapter.isPublished) {
-        await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapter.id}/unpublish`
-        );
+      if (course.isPublished) {
+        await axios.patch(`/api/courses/${course.id}/unpublish`);
 
-        toast.success("Chapter Unpublished");
+        toast.success("Course Unpublished");
       } else {
-        await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapter.id}/publish`
-        );
+        await axios.patch(`/api/courses/${course.id}/publish`);
 
-        toast.success("Chapter Published");
+        toast.success("Course Published");
+
+        confettiStore.onOpen();
       }
 
       router.refresh();
@@ -50,13 +50,13 @@ const ChapterActions = ({ disabled, courseId, chapter }: Props) => {
     try {
       setIsLoading(true);
 
-      await axios.delete(`/api/courses/${courseId}/chapters/${chapter.id}`);
+      await axios.delete(`/api/courses/${course.id}`);
 
-      toast.success("Chapter deleted");
+      toast.success("Course deleted");
 
       router.refresh();
 
-      router.push(`/teacher/courses/${courseId}`);
+      router.push("/teacher/courses");
     } catch (err) {
       toast.error("Something went wrong. Try again!");
     } finally {
@@ -72,7 +72,7 @@ const ChapterActions = ({ disabled, courseId, chapter }: Props) => {
         size="sm"
         disabled={disabled || isLoading}
       >
-        {chapter.isPublished ? "Unpublish" : "Publish"}
+        {course.isPublished ? "Unpublish" : "Publish"}
       </Button>
 
       <ConfirmModal onConfirm={onDelete}>
@@ -84,4 +84,4 @@ const ChapterActions = ({ disabled, courseId, chapter }: Props) => {
   );
 };
 
-export default ChapterActions;
+export default CourseActions;

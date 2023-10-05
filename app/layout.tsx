@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import ToasterProvider from "@/components/providers/toaster-provider";
+import { ConfettiProvider } from "@/components/providers/confetti-provider";
 
 const font = Nunito_Sans({ subsets: ["latin"] });
 
@@ -20,6 +21,8 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={font.className}>
+          <ConfettiProvider />
+
           <ToasterProvider />
 
           {children}
