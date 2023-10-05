@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { Button } from "../ui/button";
+import SearchInput from "../SearchInput";
 import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 
@@ -18,6 +19,12 @@ const NavRoutes = () => {
 
   return (
     <>
+      {isSearchPage && (
+        <div className="hidden md:block">
+          <SearchInput />
+        </div>
+      )}
+
       <div className="flex items-center gap-2 ml-auto">
         {isTeacherPage || isPlayerPage ? (
           <Link href="/">
