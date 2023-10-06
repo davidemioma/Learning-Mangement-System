@@ -51,7 +51,7 @@ export async function DELETE(
       return new NextResponse("Chapter not found", { status: 404 });
     }
 
-    if (chapter.videoUrl) {
+    if (chapter?.videoUrl) {
       //Check if there is an existing mux data
       const existingMuxData = await prismadb.muxData.findFirst({
         where: {
