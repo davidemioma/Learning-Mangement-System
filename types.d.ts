@@ -6,3 +6,8 @@ export type CourseType = Course & {
   purchases: Purchase[];
   progress: number | null;
 };
+
+export type DashboardResults = {
+  completedCourses: CourseType[];
+  courseInProgress: CourseType[];
+};
