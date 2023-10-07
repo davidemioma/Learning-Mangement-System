@@ -7,6 +7,7 @@ import { getChapter } from "@/actions/getChapter";
 import VideoPlayer from "./_components/VideoPlayer";
 import { Separator } from "@/components/ui/separator";
 import CourseEnrollButton from "./_components/CourseEnrollButton";
+import CourseProgressButton from "./_components/CourseProgressButton";
 
 export default async function Chapter({
   params,
@@ -61,7 +62,12 @@ export default async function Chapter({
           <h2 className="text-2xl font-semibold mb-2">{data.chapter.title}</h2>
 
           {data.purchase ? (
-            <div>CourseProgressButton</div>
+            <CourseProgressButton
+              courseId={courseId}
+              chapterId={chapterId}
+              nextChapterId={data.nextChapter?.id!}
+              isCompleted={!!data.userProgress?.isCompleted}
+            />
           ) : (
             <CourseEnrollButton
               courseId={courseId}

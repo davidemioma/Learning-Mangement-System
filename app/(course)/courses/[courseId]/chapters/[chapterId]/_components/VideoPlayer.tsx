@@ -34,7 +34,34 @@ const VideoPlayer = ({
 
   const [isReady, setIsReady] = useState(false);
 
-  const onEnded = () => {};
+  const onEnded = async () => {
+    if (!completeOnEnd) return;
+
+    try {
+      await axios.put(
+        `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+        {
+          isCompleted: true,
+        }
+      );
+
+      //Finish the course
+      if (!nextChapterId) {
+        confetti.onOpen();
+      }
+
+      toast.success("Progress updated");
+
+      router.refresh();
+
+      //Moves to the next chapter
+      if (nextChapterId) {
+        router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
 
   return (
     <div className="relative aspect-video">

@@ -1,5 +1,6 @@
 import React from "react";
 import CourseSidebarItem from "./CourseSidebarItem";
+import CourseProgress from "@/components/CourseProgress";
 import { Chapter, Course, Purchase, UserProgress } from "@prisma/client";
 
 interface Props {
@@ -18,7 +19,11 @@ const CourseSidebar = ({ course, percentageProgress, purchase }: Props) => {
       <div className="flex flex-col p-8 border-b">
         <h1 className="font-semibold">{course.title}</h1>
 
-        <div>Purchase and progress</div>
+        {purchase && (
+          <div className="mt-10">
+            <CourseProgress variant="success" value={percentageProgress} />
+          </div>
+        )}
       </div>
 
       <div className="w-full flex flex-col">
