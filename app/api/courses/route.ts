@@ -1,12 +1,13 @@
 import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
+import { isTeacher } from "@/lib/teacher";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
     const { userId } = auth();
 
-    if (!userId) {
+    if (!userId || !isTeacher(userId)) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
